@@ -1,0 +1,48 @@
+﻿@using Noteable.Services
+@inject IJSRuntime JsRuntime
+
+<div class="modal-lg fade show d-block" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content n-modal-inner">
+			<form @onsubmit="AddOrUpdateNotebookName">
+				<div class="modal-body">
+					<input id="newNotebookName" @ref="_focusElement" class="form-control" type="text" placeholder="Notebook Name" @bind="NotebookName" required>
+				</div>
+				<div class="modal-footer d-flex justify-content-end">
+					<button type="button" class="btn btn-secondary me-2" @onclick="Cancel">Cancel</button>
+					<button type="submit" class="btn btn-primary">Add</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@code {
+	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+	[CascadingParameter] IModalService Modal { get; set; } = default!;
+	[Parameter] public string NotebookName { get; set; } = string.Empty;
+
+	private ElementReference _focusElement;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(firstRender)
+		{
+			await JsRuntime.InvokeVoidAsync("focus", _focusElement);
+		}
+	}
+	
+	private async Task AddOrUpdateNotebookName()
+	{
+		if(string.IsNullOrWhiteSpace(NotebookName)) return;
+
+		await BlazoredModal.CloseAsync(ModalResult.Ok(NotebookName));
+		NotebookName = string.Empty;
+	}
+
+	private async Task Cancel()
+	{
+		await BlazoredModal.CancelAsync();
+		NotebookName = string.Empty;
+	}
+}

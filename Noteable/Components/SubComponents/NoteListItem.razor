@@ -1,0 +1,20 @@
+﻿@using Noteable.Models
+
+<div class="list-group-item list-group-item-action @(Selected ? "active" : "") d-flex justify-content-between px-2" @onclick="SelectNote">
+	<div class="px-2">
+		<span>@Note.Title</span>
+	</div>
+	<div class="btn-group-sm">
+		<button class="btn btn-sm btn-danger" @onclick="RemoveNote"><i class="bi bi-trash"></i></button>
+	</div>
+</div>
+
+@code {
+	[Parameter] public Note Note { get; set; }
+	[Parameter] public bool Selected { get; set; }
+	[Parameter] public EventCallback<Note> OnSelect { get; set; }
+	[Parameter] public EventCallback<Note> OnRemove { get; set; }
+
+	private async Task SelectNote() => await OnSelect.InvokeAsync(Note);
+	private async Task RemoveNote() => await OnRemove.InvokeAsync(Note);
+}

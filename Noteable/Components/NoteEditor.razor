@@ -1,0 +1,44 @@
+﻿@using Noteable.Models
+@using Noteable.Services
+
+@inject IJSRuntime JsRuntime
+@inject INoteRepository NoteRepo
+
+<div class="col-editor">
+	<h3 class="d-flex justify-content-between align-content-center">
+		<span>Editor</span>
+		@if (Note is not null)
+		{
+			<span class="last-updated">
+				@Note.LastUpdated.ToString("g")
+			</span>
+		}
+	</h3>
+
+	@if (Note is not null)
+	{
+		<div class="editor-form">
+			<input name="title" @onblur="AutoSave" @bind="Note.Title" @ref="_focusElement" class="form-control" type="text" placeholder="Title" autofocus />
+			<textarea name="content" @onblur="AutoSave" @bind="Note.Content" class="form-control" placeholder="Content"></textarea>
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public Note Note { get; set; }
+	[Parameter] public EventCallback<Note> OnAutoSave { get; set; }
+
+	private ElementReference _focusElement;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		// await JsRuntime.InvokeVoidAsync("focus", _focusElement);
+	}
+
+	private async Task AutoSave()
+	{
+		Note.LastUpdated = DateTime.Now;
+		await NoteRepo.UpdateNoteAsync(Note);
+		await OnAutoSave.InvokeAsync(Note);
+	}
+}

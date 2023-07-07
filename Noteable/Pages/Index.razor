@@ -1,0 +1,76 @@
+﻿@page "/"
+@using Noteable.Services
+@using Noteable.Models
+
+@inject INoteRepository NoteRepo
+
+<NotebooksList 
+	Notebooks="@Notebooks" 
+	OnSelectNotebook="HandleNotebookSelection" 
+	OnEditNotebookName="HandleNotebookNameChanged" 
+	OnRemoveNotebook="HandleNotebookRemoved" />
+
+@if (CurrentNotebook is not null)
+{
+	<NotesList 
+		Notebook="@CurrentNotebook" 
+		OnSelectNote="HandleNoteSelection" />
+}
+
+@if (CurrentNote is not null)
+{
+	<NoteEditor 
+		Note="@CurrentNote" 
+		OnAutoSave="HandleAutoSave" />
+}
+
+
+@code {
+	[CascadingParameter] private IModalService Modal { get; set; } = default!;
+	
+	private List<Notebook> Notebooks { get; set; } = new();
+
+	private Notebook? CurrentNotebook { get; set; }
+	private Note? CurrentNote { get; set; }
+	
+	private ElementReference _focusElement;
+
+	protected override async Task OnInitializedAsync()
+	{
+		Notebooks = await NoteRepo.GetNotebooksAsync();
+	}
+
+	private void HandleNotebookSelection(Notebook notebook)
+	{
+		CurrentNotebook = notebook;
+		CurrentNote = CurrentNotebook.Notes.Any() ? CurrentNotebook.Notes.First() : null;
+		StateHasChanged();
+	}
+	private void HandleNoteSelection(Note note)
+	{
+		CurrentNote = note;
+		StateHasChanged();
+	}
+
+	private void HandleNotebookRemoved(Notebook notebook)
+	{
+		CurrentNotebook = null;
+		CurrentNote = null;
+		StateHasChanged();
+	}
+	private void HandleNotebookNameChanged(Notebook notebook)
+	{
+		var targetNotebook = Notebooks.FirstOrDefault(x => x.Id == notebook.Id);
+		if (targetNotebook is not null)
+			targetNotebook.Name = notebook.Name;
+		else
+			CurrentNote = null;
+		
+		StateHasChanged();
+	}
+	private void HandleAutoSave(Note note)
+	{
+		CurrentNote = note;
+		StateHasChanged();
+	}
+}

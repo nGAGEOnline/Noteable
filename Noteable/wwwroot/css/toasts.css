@@ -1,0 +1,69 @@
+﻿.blazored-toast {
+	box-shadow: transparent !important;
+	background-color: transparent !important;
+	border-top: 0 solid var(--bs-success) !important;
+	border-radius: 10px !important;
+}
+
+.toast-base,
+.toast-success,
+.toast-info,
+.toast-warning,
+.toast-error {
+	z-index: var(--bs-toast-zindex);
+	padding: var(--bs-toast-padding-y) var(--bs-toast-padding-x);
+	letter-spacing: var(--bs-toast-spacing);
+	max-width: var(--bs-toast-max-width);
+	color: var(--bs-toast-color);
+	background: var(--bs-toast-bg);
+	border-width: 1px;
+	border-color: var(--bs-dark);
+	box-shadow: rgba(0,0,0,0.30) 0 10px 30px 2px !important;
+	border-radius: 10px !important;
+	overflow-x: hidden;
+}
+.toast-header i {
+	padding-right: 10px;
+}
+
+.toast-base,
+.toast-info,
+.toast-success,
+.toast-warning,
+.toast-error {
+	border-radius: 10px !important;
+}
+
+.toast-header {
+	border-radius: 10px 10px 0 0 !important;
+	padding: 0.5rem 1rem;
+	color: var(--bs-light);
+	background: var(--bs-dark-bg-subtle);
+}
+
+.toast-base .toast-header {
+	color: var(--bs-secondary);
+	border-bottom: 3px solid var(--bs-secondary);
+}
+.toast-success .toast-header {
+	color: var(--bs-success);
+	border-bottom: 3px solid var(--bs-success);
+}
+.toast-info .toast-header {
+	color: var(--bs-info);
+	border-bottom: 3px solid var(--bs-info);
+}
+.toast-warning .toast-header {
+	color: var(--bs-warning);
+	border-bottom: 3px solid var(--bs-warning);
+}
+.toast-error .toast-header {
+	color: var(--bs-danger);
+	border-bottom: 3px solid var(--bs-danger);
+}
+.toast-body {
+	border-radius: 0 0 10px 10px !important;
+	padding: 0.5rem 1rem;
+	color: #999;
+	background: var(--bs-secondary-bg);
+}

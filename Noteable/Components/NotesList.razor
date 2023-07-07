@@ -1,0 +1,73 @@
+﻿@namespace Noteable.Components
+@using Noteable.Models
+@using Noteable.Services
+@inject INoteRepository NoteRepo
+@inject IToastService ToastService
+@inject IModalService Modal
+
+<div class="col-notes">
+	<h3 class="d-flex justify-content-between align-content-center">
+		<span>Notes</span>
+		@if (Notebook is not null)
+		{
+			<button type="button" class="btn btn-sm btn-primary mx-2" @onclick="CreateNote">
+				Add Note
+			</button>
+		}
+	</h3>
+	<ul class="list-group">
+		@if (Notebook is not null)
+		{
+			foreach (var note in Notebook.Notes)
+			{
+				<NoteListItem 
+					Note="@note" 
+					Selected="@(note == CurrentNote)" 
+					OnSelect="SelectNote" 
+					OnRemove="RemoveNote" />
+			}
+		}
+	</ul>
+</div>
+
+@code {
+	[Parameter] public Notebook? Notebook { get; set; }
+	[Parameter] public EventCallback<Note> OnSelectNote { get; set; }
+
+	private Note CurrentNote { get; set; }
+
+	private async Task CreateNote()
+	{
+		if (Notebook == null)
+			return;
+		
+		var count = Notebook?.Notes.Count;
+		var note = new Note { Title = $"New Note {count + 1}", Content = "New Note Content", NotebookId = Notebook.Id };
+		CurrentNote = await NoteRepo.AddNoteAsync(note);
+		await OnSelectNote.InvokeAsync(CurrentNote);
+	}
+
+	private async Task RemoveNote(Note note)
+	{
+		var parameters = new ModalParameters().Add("Message", $"Are you sure you want to delete the note: {note.Title}?");
+		var modal = Modal.Show<ConfirmationModal>("Delete Note", parameters);
+		var result = await modal.Result;
+		var toast = new Toast(ToastService);
+		if (result.Cancelled)
+		{
+			toast.Show("Delete Note", $"Deleting Note was cancelled", ToastLevel.Warning, 5);
+			return;
+		}
+		
+		await NoteRepo.DeleteNoteAsync(note.Id);
+		toast.Show("Delete Note", $"Notebook: {note.Title} was successfully deleted.", ToastLevel.Success, 5);
+
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private void SelectNote(Note note)
+	{
+		CurrentNote = note;
+		OnSelectNote.InvokeAsync(note);
+	}
+}

@@ -1,0 +1,33 @@
+﻿@namespace Noteable.Components.SubComponents
+
+@using Noteable.Models
+
+<li class="list-group-item list-group-item-action @(Notebook == CurrentNotebook ? "active" : "") d-flex justify-content-between" @onclick="() => OnSelect.InvokeAsync(Notebook)">
+	<div class="px-2">
+		<span>@Notebook.Name</span>
+	</div>
+	<div>
+		<span class="badge badge-primary badge-pill text-bg-secondary mx-2">@Notebook.Notes.Count</span>
+		<div class="btn-group btn-group-sm">
+			<button class="btn btn-sm btn-secondary" @onclick="() => EditNotebookName.InvokeAsync(Notebook)"><i class="bi bi-pencil"></i></button>
+			<button class="btn btn-sm btn-danger" @onclick="() => RemoveNotebook.InvokeAsync(Notebook)"><i class="bi bi-trash"></i></button>
+		</div>
+	</div>
+</li>
+
+@code {
+	[Parameter]
+	public Notebook Notebook { get; set; }
+	
+	[Parameter]
+	public Notebook CurrentNotebook { get; set; }
+
+	[Parameter]
+	public EventCallback<Notebook> OnSelect { get; set; }
+	
+	[Parameter]
+	public EventCallback<Notebook> EditNotebookName { get; set; }
+	
+	[Parameter]
+	public EventCallback<Notebook> RemoveNotebook { get; set; }
+}

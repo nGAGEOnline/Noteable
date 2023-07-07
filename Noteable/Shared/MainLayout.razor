@@ -1,0 +1,31 @@
+﻿@using Blazored.Toast.Configuration
+@inherits LayoutComponentBase
+
+	<Navigation></Navigation>
+
+	<div class="main-content m-0 p-0">
+		@Body
+	</div>
+
+	<BlazoredToasts Position="ToastPosition.BottomRight"
+	                MaxToastCount="3"
+	                ShowCloseButton="true"
+	                Timeout="10"
+	                IconType="IconType.Custom"
+	                SuccessClass="toast-success"
+	                SuccessIcon="bi bi-hand-thumbs-up-fill"
+	                ErrorClass="toast-error"
+	                ErrorIcon="bi bi-x-octagon-fill"
+	                WarningClass="toast-warming"
+	                WarningIcon="bi bi-exclamation-triangle-fill"
+	                InfoClass="toast-info" 
+	                InfoIcon="bi bi-info-circle-fill"
+	                RemoveToastsOnNavigation="true"
+	                PauseProgressOnHover="true" />
+	
+	<Footer></Footer>
+
+
+@code {
+
+}

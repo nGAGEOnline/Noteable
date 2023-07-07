@@ -1,0 +1,31 @@
+﻿<div class="modal-lg fade show d-block" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content n-modal-inner">
+			<form @onsubmit="Confirm">
+				<div class="modal-body">
+					<p>@Message</p>
+				</div>
+				<div class="modal-footer d-flex justify-content-end">
+					<button type="button" class="btn btn-danger me-2" @onclick="Cancel">NO</button>
+					<button type="submit" class="btn btn-success">YES</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@code {
+	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+	[CascadingParameter] IModalService Modal { get; set; } = default!;
+	[Parameter] public string Message { get; set; }
+
+	private async Task Confirm()
+	{
+		await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+	}
+
+	private async Task Cancel()
+	{
+		await BlazoredModal.CancelAsync();
+	}
+}

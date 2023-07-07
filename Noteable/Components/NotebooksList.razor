@@ -1,0 +1,124 @@
+﻿@using Noteable.Models
+@using Noteable.Services
+@inject INoteRepository NoteRepo
+@inject IToastService ToastService
+@inject IModalService Modal
+
+<div class="col-notebooks">
+	<h3 class="d-flex justify-content-between align-content-center">
+		<span>Notebooks</span>
+		<button type="button" class="btn btn-sm btn-primary mx-2" @onclick="CreateNotebook">
+			Add Notebook
+		</button>
+	</h3>
+
+	<ul class="list-group">
+		@foreach (var notebook in Notebooks)
+		{
+			<NotebookListItem 
+				Notebook="@notebook" 
+				CurrentNotebook="@CurrentNotebook" 
+				OnSelect="SelectNotebook" 
+				EditNotebookName="EditNotebookName" 
+				RemoveNotebook="RemoveNotebook" />
+		}
+	</ul>
+</div>
+
+@code {
+	[Parameter] public List<Notebook> Notebooks { get; set; } = new();
+	[Parameter] public EventCallback<Notebook> OnSelectNotebook { get; set; }
+	[Parameter] public EventCallback<Notebook> OnEditNotebookName { get; set; }
+	[Parameter] public EventCallback<Notebook> OnRemoveNotebook { get; set; }
+
+	private Notebook CurrentNotebook { get; set; }
+
+	private async Task CreateNotebook()
+	{
+		var parameters = new ModalParameters().Add("NotebookName", $"Notebook {Notebooks.Count + 1}");
+		var modal = Modal.Show<CreateNotebookModal>("Create Notebook", parameters);
+		var result = await modal.Result;
+		if (result.Cancelled)
+		{
+			var toast = new Toast(ToastService);
+			toast.Show("Notebook", $"Creating Notebook was cancelled", ToastLevel.Warning, 5);
+			return;
+		}
+		
+		var data = result.Data?.ToString();
+		if (string.IsNullOrWhiteSpace(data))
+			return;
+		
+		await AddNotebook(data);
+		CurrentNotebook = Notebooks.Last();
+		SelectNotebook(CurrentNotebook);
+	}
+
+	private async Task EditNotebookName(Notebook notebook)
+	{
+		var parameters = new ModalParameters().Add("NotebookName", $"{notebook.Name}");
+		var modal = Modal.Show<CreateNotebookModal>("Create Notebook", parameters);
+		var result = await modal.Result;
+		if (result.Cancelled)
+		{
+			var toast = new Toast(ToastService);
+			toast.Show("Notebook", $"Editing Notebook name was cancelled", ToastLevel.Warning, 5);
+			return;
+		}
+		
+		var data = result.Data?.ToString();
+		if (string.IsNullOrWhiteSpace(data))
+			return;
+
+		notebook.Name = data;
+		await UpdateNotebook(notebook);
+		await OnEditNotebookName.InvokeAsync(notebook);
+		SelectNotebook(notebook);
+	}
+
+	private async Task RemoveNotebook(Notebook notebook)
+	{
+		var parameters = new ModalParameters().Add("Message", $"Are you sure you want to delete the notebook: {notebook.Name}?");
+		var modal = Modal.Show<ConfirmationModal>("Delete Notebook", parameters);
+		var result = await modal.Result;
+		var toast = new Toast(ToastService);
+		if (result.Cancelled)
+		{
+			toast.Show("Delete Notebook", $"Deleting Notebook was cancelled", ToastLevel.Warning, 5);
+			return;
+		}
+		
+		await NoteRepo.DeleteNotebookAsync(notebook.Id);
+		toast.Show("Delete Notebook", $"Notebook: {notebook.Name} was successfully deleted.", ToastLevel.Success, 5);
+		
+		await OnRemoveNotebook.InvokeAsync(notebook);
+		// SelectNotebook(CurrentNotebook);
+	}
+
+	private async Task AddNotebook(string notebookName)
+	{
+		var notebook = new Notebook { Name = notebookName };
+		await NoteRepo.AddNotebookAsync(notebook);
+
+		Notebooks = await NoteRepo.GetNotebooksAsync();
+		
+		var toast = new Toast(ToastService);
+		toast.Show("Notebook", $"Notebook: {notebook.Name} was successfully created.", ToastLevel.Success, 5);
+	}
+
+	private async Task UpdateNotebook(Notebook notebook)
+	{
+		await NoteRepo.UpdateNotebookAsync(notebook);
+
+		Notebooks = await NoteRepo.GetNotebooksAsync();
+		
+		var toast = new Toast(ToastService);
+		toast.Show("Notebook", $"Notebook: {notebook.Name} was successfully updated.", ToastLevel.Success, 5);
+	}
+
+	private void SelectNotebook(Notebook notebook)
+	{
+		CurrentNotebook = notebook;
+		OnSelectNotebook.InvokeAsync(notebook);
+	}
+}
