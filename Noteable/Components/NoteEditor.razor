@@ -9,7 +9,7 @@
 		<span>Editor</span>
 		@if (Note is not null)
 		{
-			<span class="last-updated" @ref="_lastUpdatedRef" id="last-updated">
+			<span class="last-updated" id="last-updated">
 				@Note.LastUpdated.ToString("g")
 			</span>
 		}
@@ -32,7 +32,6 @@
 	[Parameter] public EventCallback<Note> OnAutoSave { get; set; }
 
 	private ElementReference _focusElement;
-	private ElementReference _lastUpdatedRef;
 
 	private string _previousContent = "";
 	private DateTime _lastInputTime = DateTime.Now;
