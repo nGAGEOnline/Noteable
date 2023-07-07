@@ -25,18 +25,16 @@
 </div>
 
 @code {
-	[Parameter] public Note Note { get; set; }
+	[Parameter] public Note? Note { get; set; }
 	[Parameter] public EventCallback<Note> OnAutoSave { get; set; }
 
 	private ElementReference _focusElement;
 
-	protected override async Task OnParametersSetAsync()
-	{
-		// await JsRuntime.InvokeVoidAsync("focus", _focusElement);
-	}
-
 	private async Task AutoSave()
 	{
+		if (Note is null)
+			return;
+		
 		Note.LastUpdated = DateTime.Now;
 		await NoteRepo.UpdateNoteAsync(Note);
 		await OnAutoSave.InvokeAsync(Note);

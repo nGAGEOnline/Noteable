@@ -92,7 +92,6 @@
 		toast.Show("Delete Notebook", $"Notebook: {notebook.Name} was successfully deleted.", ToastLevel.Success, 5);
 		
 		await OnRemoveNotebook.InvokeAsync(notebook);
-		// SelectNotebook(CurrentNotebook);
 	}
 
 	private async Task AddNotebook(string notebookName)

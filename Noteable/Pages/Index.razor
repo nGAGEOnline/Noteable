@@ -14,7 +14,8 @@
 {
 	<NotesList 
 		Notebook="@CurrentNotebook" 
-		OnSelectNote="HandleNoteSelection" />
+		OnSelectNote="HandleNoteSelection"
+		OnNoteRemoved="HandleNoteRemoved"/>
 }
 
 @if (CurrentNote is not null)
@@ -55,6 +56,11 @@
 	private void HandleNotebookRemoved(Notebook notebook)
 	{
 		CurrentNotebook = null;
+		CurrentNote = null;
+		StateHasChanged();
+	}
+	private void HandleNoteRemoved(Note note)
+	{
 		CurrentNote = null;
 		StateHasChanged();
 	}

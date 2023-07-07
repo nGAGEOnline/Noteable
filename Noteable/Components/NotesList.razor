@@ -33,6 +33,7 @@
 @code {
 	[Parameter] public Notebook? Notebook { get; set; }
 	[Parameter] public EventCallback<Note> OnSelectNote { get; set; }
+	[Parameter] public EventCallback<Note> OnNoteRemoved { get; set; }
 
 	private Note CurrentNote { get; set; }
 
@@ -62,7 +63,7 @@
 		await NoteRepo.DeleteNoteAsync(note.Id);
 		toast.Show("Delete Note", $"Notebook: {note.Title} was successfully deleted.", ToastLevel.Success, 5);
 
-		await InvokeAsync(StateHasChanged);
+		await OnNoteRemoved.InvokeAsync(note);
 	}
 
 	private void SelectNote(Note note)
