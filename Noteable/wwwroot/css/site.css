@@ -155,10 +155,11 @@ html {
 	font-size: 0.8em;
 }
 #save-indicator span {
+	position: relative;
 	color: var(--bs-success);
 	background-color: #355535;
 	border-radius: 5px;
-	padding: 3px 12px;
+	padding: 3px 12px 3px 32px;
 }
 
 
@@ -184,10 +185,12 @@ html {
 }
 
 .spin {
-	animation: spin .5s linear infinite;
+	position: absolute;
+	left: 10px;
+	animation: spinner .5s linear infinite;
 }
-@keyframes spin {
+@keyframes spinner {
 	0% { transform: rotate(0deg); }
-	100% { transform: rotate(359deg); }
+	100% { transform: rotate(1turn); }
 }
 
