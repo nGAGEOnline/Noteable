@@ -148,3 +148,46 @@ html {
 	background-color: #353535;
 	border-color: #505050;
 }
+
+/* TEXT AREA */
+#save-indicator {
+	opacity: 0;
+	font-size: 0.8em;
+}
+#save-indicator span {
+	color: var(--bs-success);
+	background-color: #355535;
+	border-radius: 5px;
+	padding: 3px 12px;
+}
+
+
+/* ANIMATIONS */
+.fade-green-to-black {
+	animation: fadeGreenToBlack 3s;
+}
+@keyframes fadeGreenToBlack {
+	0% { color: #555; }
+	12.5% { color: var(--bs-success); }
+	50% { color: var(--bs-success); }
+	100% { color: #555; }
+}
+
+.fade-in-out {
+	animation: fadeInOut 4s forwards;
+}
+@keyframes fadeInOut {
+	0% { opacity: 0; }
+	12.5% { opacity: 1; }
+	50% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+.spin {
+	animation: spin .5s linear infinite;
+}
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(359deg); }
+}
+

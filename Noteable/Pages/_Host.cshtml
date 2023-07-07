@@ -52,7 +52,25 @@
 	<script src="_framework/blazor.server.js"></script>
 
 	<script>
-	    window.focus = (element) => element.focus();
+	    window.focus = (element) => { element.focus(); }
+		
+		window.addClassWithTimeout = (elementId, className, timeout) => {
+			const element = document.getElementById(elementId);
+			if (element) {
+				console.log("Element: ", element);
+				console.log("Element Style: ", element.style);
+				console.log("Element Animation Duration: ", element.style.animationDuration);
+    
+    			element.style.animationDuration = timeout + 'ms';
+				element.classList.add(className);
+				setTimeout(() => {
+					element.classList.remove(className);
+				}, timeout);
+			} else {
+				console.error("Element is undefined");
+			}
+		}
+
 	</script>
 </body>
 </html>

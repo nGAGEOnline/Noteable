@@ -9,7 +9,7 @@
 		<span>Editor</span>
 		@if (Note is not null)
 		{
-			<span class="last-updated">
+			<span class="last-updated" @ref="_lastUpdatedRef" id="last-updated">
 				@Note.LastUpdated.ToString("g")
 			</span>
 		}
@@ -19,7 +19,10 @@
 	{
 		<div class="editor-form">
 			<input name="title" @onblur="AutoSave" @bind="Note.Title" @ref="_focusElement" class="form-control" type="text" placeholder="Title" autofocus />
-			<textarea name="content" @onblur="AutoSave" @bind="Note.Content" class="form-control" placeholder="Content"></textarea>
+			<textarea name="content" @onblur="AutoSave" @bind="Note.Content" @oninput="OnInputChange" class="form-control form-control-lg" placeholder="Content"></textarea>
+			<div id="save-indicator" class="d-flex justify-content-end">
+				<span><i class="bi bi-arrow-clockwise spin"></i> Saving...</span>
+			</div>
 		</div>
 	}
 </div>
@@ -29,14 +32,68 @@
 	[Parameter] public EventCallback<Note> OnAutoSave { get; set; }
 
 	private ElementReference _focusElement;
+	private ElementReference _lastUpdatedRef;
+
+	private string _previousContent = "";
+	private DateTime _lastInputTime = DateTime.Now;
+	private DateTime _lastSaveTime = DateTime.MinValue;
+	private bool _significantCharFlag = false;
 
 	private async Task AutoSave()
 	{
 		if (Note is null)
 			return;
 		
-		Note.LastUpdated = DateTime.Now;
+		var currentTime = DateTime.Now;
+		if ((currentTime - _lastSaveTime).TotalSeconds < 5)
+			return;
+		
+		Note.LastUpdated = currentTime;
 		await NoteRepo.UpdateNoteAsync(Note);
 		await OnAutoSave.InvokeAsync(Note);
+
+		await JsRuntime.InvokeVoidAsync("addClassWithTimeout", "save-indicator", "fade-in-out", 4000);
+		
+		_lastSaveTime = currentTime;
+		await InvokeAsync(StateHasChanged);
+		
+		await JsRuntime.InvokeVoidAsync("addClassWithTimeout", "last-updated", "fade-green-to-black", 4000);
+	}
+
+	private async Task OnInputChange(ChangeEventArgs e)
+	{
+		var newContent = e.Value?.ToString() ?? "";
+		
+		if (ShouldTriggerAutoSave(newContent, _previousContent))
+			await AutoSave();
+		
+		_previousContent = newContent;
+	}
+
+	private bool ShouldTriggerAutoSave(string newContent, string oldContent)
+	{
+		const int charCountTrigger = 50;
+		const double timeTriggerSeconds = 60;
+		char[] significantChars = new[] { '.', ',', ':', ';', '!', '?', ')', ']', '}', '\n', '\r' };
+		
+		if (newContent.Length - oldContent.Length >= charCountTrigger)
+			return true;
+		
+		if ((DateTime.Now - _lastInputTime).TotalSeconds >= timeTriggerSeconds)
+		{
+			_lastInputTime = DateTime.Now;
+			return true;
+		}
+
+		if (_significantCharFlag)
+		{
+			_significantCharFlag = false;
+			return true;
+		}
+		
+		if (significantChars.Any(newContent.Contains))
+			_significantCharFlag = true;
+		
+		return false;
 	}
 }
