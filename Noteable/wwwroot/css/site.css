@@ -63,6 +63,12 @@ html {
 	text-transform: uppercase;
 }
 
+.col-notebooks ul,
+.col-notes ul {
+	max-height: 82%;
+	overflow-y: auto;
+}
+
 .editor-form {
     padding: 5px 10px;
 }

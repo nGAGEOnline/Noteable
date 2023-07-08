@@ -16,18 +16,9 @@
 </li>
 
 @code {
-	[Parameter]
-	public Notebook Notebook { get; set; }
-	
-	[Parameter]
-	public Notebook CurrentNotebook { get; set; }
-
-	[Parameter]
-	public EventCallback<Notebook> OnSelect { get; set; }
-	
-	[Parameter]
-	public EventCallback<Notebook> EditNotebookName { get; set; }
-	
-	[Parameter]
-	public EventCallback<Notebook> RemoveNotebook { get; set; }
+	[Parameter] public Notebook Notebook { get; set; }
+	[Parameter] public Notebook CurrentNotebook { get; set; }
+	[Parameter] public EventCallback<Notebook> OnSelect { get; set; }
+	[Parameter] public EventCallback<Notebook> EditNotebookName { get; set; }
+	[Parameter] public EventCallback<Notebook> RemoveNotebook { get; set; }
 }

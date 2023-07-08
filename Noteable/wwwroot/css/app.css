@@ -27,3 +27,34 @@
 .blazor-error-boundary::after {
     content: "An error has occurred."
 }
+
+
+[data-bs-theme=dark] textarea,
+[data-bs-theme=dark] textarea.form-control,
+[data-bs-theme=dark] input[type="text"] {
+	border-color: #454545;
+}
+
+[data-bs-theme=light] textarea,
+[data-bs-theme=light] textarea.form-control,
+[data-bs-theme=light] input[type="text"] {
+	border-color: #CCC;
+}
+
+textarea,
+textarea.form-control,
+input[type="text"] {
+	outline: 0 none;
+}
+
+textarea:hover,
+textarea.form-control:hover,
+input[type="text"]:hover {
+	outline: 0 none;
+}
+
+textarea:focus,
+textarea.form-control:focus,
+input[type="text"]:focus {
+	outline: 0 none;
+}
