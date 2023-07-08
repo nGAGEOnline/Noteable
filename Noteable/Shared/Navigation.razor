@@ -1,12 +1,25 @@
-﻿<nav class="navbar navbar-expand header">
-	<div class="nav-header container-fluid justify-content-start">
-		<NavLink class="navbar-brand" href="" Match="NavLinkMatch.All">
-			<img src="images/logo.png" alt="logo"/>
-		</NavLink>
-		<div class="header-title">ote<span>able</span></div>
+﻿@inject IJSRuntime JsRuntime
+
+<nav class="navbar navbar-expand header">
+	<div class="nav-header container-fluid justify-content-between">
+		<div class="d-flex justify-content-start">
+			<NavLink class="navbar-brand" href="" Match="NavLinkMatch.All">
+				<img src="images/logo.png" alt="logo"/>
+			</NavLink>
+			<div class="header-title">ote<span>able</span></div>
+		</div>
+		<div class="theme-toggle">
+			<i class="bi @(_isDarkMode ? "bi-sun" : "bi-sun-fill") theme-toggle" @onclick="ToggleTheme"></i>
+		</div>
 	</div>
 </nav>
 
-
 @code {
+	private bool _isDarkMode = false;
+
+	private async Task ToggleTheme()
+	{
+		_isDarkMode = !_isDarkMode;
+		await JsRuntime.InvokeVoidAsync("toggleTheme", _isDarkMode);
+	}
 }

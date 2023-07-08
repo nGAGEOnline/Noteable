@@ -4,7 +4,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -35,7 +35,7 @@
 	<component type="typeof(HeadOutlet)" render-mode="ServerPrerendered"/>
 </head>
 
-<body>
+<body data-bs-theme="light">
 	<component type="typeof(App)" render-mode="ServerPrerendered"/>
 
 	<div id="blazor-error-ui">
@@ -53,6 +53,12 @@
 
 	<script>
 	    window.focus = (element) => { element.focus(); }
+		window.toggleTheme = () => {
+			const body = document.body;
+			const currentTheme = body.getAttribute('data-bs-theme');
+			const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+			body.setAttribute('data-bs-theme', newTheme);
+		}
 		
 		window.addClassWithTimeout = (elementId, className, timeout) => {
 			const element = document.getElementById(elementId);

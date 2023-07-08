@@ -38,7 +38,7 @@
 	border-radius: 10px 10px 0 0 !important;
 	padding: 0.5rem 1rem;
 	color: var(--bs-light);
-	background: var(--bs-dark-bg-subtle);
+	background: var(--bs-dark);
 }
 
 .toast-base .toast-header {
@@ -61,9 +61,17 @@
 	color: var(--bs-danger);
 	border-bottom: 3px solid var(--bs-danger);
 }
+[data-bs-theme=dark] .toast-body {
+	color: var(--bs-light);
+	background: #353535;
+}
+[data-bs-theme=light] .toast-body {
+	color: var(--bs-dark);
+	background: var(--bs-light-border-subtle);
+}
 .toast-body {
 	border-radius: 0 0 10px 10px !important;
 	padding: 0.5rem 1rem;
-	color: #999;
-	background: var(--bs-secondary-bg);
+	/*color: #999;*/
+	/*background: var(--bs-secondary-bg);*/
 }
